@@ -113,25 +113,13 @@ Note, initial assignments could come from a pre-configured "library".
 - `publisheddate` (string/date) - required, used for sorting
 - ?? `duedate` (string/date) - optional, for info
 - `closed` (boolean) - (manually) closed, i.e. no more work/versions
-- `content` (JSON?) - assignment document or equivalent
-- `versiontype` (tbd) - type info allowed versions
+- `content` (string (JSON)) - assignment document or equivalent
+- `versiontype` (string (JSON)) - type info allowed versions
 - ?? `optional` (boolean) - optional, not 'required'
 - `maxversions` (number) - how many attempts/versions can be submitted (default unlimited)?
-- `responsetype` (tbd) - type info for allowed response(s)
+- `responsetype` (string (JSON)) - type info for allowed response(s)
 - ?? `allowuserresponse` (boolean) - allow other users (rather than admins) to respond
-- ?? `userresponsetype` (tbd) - if user (may be different to admin)
-
-document type needs more definition.
-Probably a JSON array of parts, each with a type and content.
-Parts may include text/html and files (attachments) - see `File`.
-May also include some structured types/fields, e.g. ratings, badges.
-
-version/response type needs more definition.
-Perhaps a JSON array of part id, name & type with some extra 
-metadata, e.g. min and max cardinality (or grouping, etc.).
-Maybe special cases, e.g. for selecting from previous submissions??
-Need to decide if structured type definition are here or in a common
-dictionary (e.g. ratings, badges).
+- ?? `userresponsetype` (string (JSON)) - if user (may be different to admin)
 
 A user's response to an `Assignment` is a `Work`.
 At the moment this is just one or more ordered `Version`s of the work.
@@ -160,8 +148,8 @@ A `Version` is a single attempt at (iteration of) an `Assignment`.
 - `createddate` (string/date) - started
 - `submitteddate` (string/date)
 - `current` (boolean) - latest
-- `versiontype` (tbd) - type info allowed versions (de-norm from Assignment)
-- `content` - document
+- `versiontype` (string (JSON)) - type info allowed versions (de-norm from Assignment)
+- `content` (string (JSON)) - document
 - `moderated` (boolean) - has been moderated
 - `moderatedadminid` (string) - FK of moderator
 - `moderateddate` (string/date) - date/time of moderation
@@ -181,8 +169,8 @@ A `Response` is a user or admin response to a student `Version`, i.e. attempt at
 - `workid` - FK to Work, de-norm from Version
 - `assignmentid` - FK to Assignment (de-norm from Work)
 - `workuserid` - FK to User of Work (de-norm from Work)
-- `responsetype` (tbd) - type info for allowed response(s) (de-norm from Assignment)
-- `content` - document ?!
+- `responsetype` (string (JSON)) - type info for allowed response(s) (de-norm from Assignment)
+- `content` (string (JSON)) - document 
 - `moderated` (boolean) - has been moderated
 - `moderatedadminid` (string) - FK of moderator
 - `moderateddate` (string/date) - date/time of moderation
@@ -215,8 +203,56 @@ or Response.
 - `moderatedokforshared` (boolean) - ok to be shared (else needs replacing)
 - ?? okforpublic
 
+## Documents / content and forms / types
 
-TODO: Shared ?
+Version/response `type`...
+
+`Type` is a JSON array of `Slot`s.
+
+`Slot` is a JSON object with:
+- `id` (string) - for internal matching
+- `name` (string) - display name/label
+- `type` (string/enum) - see below
+- `mincardinality` (number) - default 0
+- `maxcardinality` (number) - default unlimited
+- other type-specific properties (badgetype, scaletype, text-related...)
+
+?? Maybe special cases, e.g. for selecting from previous submissions??
+
+Basic `type`s are:
+- `text` - short plain text
+- `textarea` - long text
+- `image` - file with image type
+- `video` - file with video type
+- ?? `audio` - file with audio type
+- ?? `file` - file with arbitrary type
+- ?? other specific file types, e.g. `midi`, score file 
+- `badge` - i.e. icon+text 
+- `scale` - i.e. scale
+
+Specific `badge` sub-types, i.e. `badgetype` (TBC):
+- `like`
+- `tick`
+- `smile`
+
+Specific `scale` sub-types, i.e. `scaletype` (TBC):
+- `5star` - 1-5 stars
+
+`Document` type, i.e. content, is a JSON array of parts.
+
+`Part` is a JSON object with
+- `type` (string/enum) - see list
+- `name` (string) - display name/label
+- `slotid` (string) - Slot FK
+- ?? `id` - if needed/more stable than index
+
+and type-specific values:
+- `badgetype` - (for badge) see above
+- `scaletype` - (for scale) see above
+- `text` (string) - (for text and textarea) plain text content
+- `fileid` - (for file/image/video/audio) `File` FK
+- `awarded` (boolan) - (for badge)
+- `value` (number) - (for scale)
 
 ## open issues
 
@@ -224,4 +260,6 @@ TODO: Shared ?
 - responses to responses
 - individual assignments
 - user responses (or follow-on assignments)
+- does shared need any more data?
+- version/response type sharing (e.g. list)
 
