@@ -227,8 +227,10 @@ Basic `type`s are:
 - ?? `audio` - file with audio type
 - ?? `file` - file with arbitrary type
 - ?? other specific file types, e.g. `midi`, score file 
-- `badge` - i.e. icon+text 
-- `scale` - i.e. scale
+- `badge` - i.e. icon+text (mainly for responses) 
+- `scale` - i.e. scale (mainly for responses)
+- ?? `link` - URL (mainly for assignments)
+- ?? `embed` - embedded iframe, e.g. youtube video (mainly for assignments)
 
 Specific `badge` sub-types, i.e. `badgetype` (TBC):
 - `like`
@@ -249,10 +251,13 @@ Specific `scale` sub-types, i.e. `scaletype` (TBC):
 and type-specific values:
 - `badgetype` - (for badge) see above
 - `scaletype` - (for scale) see above
-- `text` (string) - (for text and textarea) plain text content
+- `text` (string) - (for text and textarea (and link?!)) plain text content
 - `fileid` - (for file/image/video/audio) `File` FK
 - `awarded` (boolan) - (for badge)
 - `value` (number) - (for scale)
+- ?? `width` (number) - (for embed)
+- ?? `height` (number) - (for embed)
+- ?? `url` (string) - (for link)
 
 ## open issues
 
